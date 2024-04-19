@@ -21,7 +21,7 @@ class Plants(Resource):
 
     def get(self):
         plants = [plant.to_dict() for plant in Plant.query.all()]
-        return make_response(jsonify(plants), 200)
+        return make_response(plants, 200)
 
     def post(self):
         data = request.get_json()
@@ -42,7 +42,6 @@ api.add_resource(Plants, '/plants')
 
 
 class PlantByID(Resource):
-
     def get(self, id):
         plant = Plant.query.filter_by(id=id).first().to_dict()
         return make_response(jsonify(plant), 200)
@@ -57,7 +56,15 @@ class PlantByID(Resource):
         db.session.commit()
 
         return make_response(plant.to_dict(), 201)
+    
+    def delete(self, id):
+        plant = Plant.query.filter_by(id=id).first()
+        db.session.delete(plant)
+        db.session.commit()
 
+        resp_body = ""
+
+        return make_response(resp_body, 204)
 
 api.add_resource(PlantByID, '/plants/<int:id>')
 
